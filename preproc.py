@@ -5,14 +5,20 @@ import numpy as np
 from mutagen.mp3 import MP3
 
 
-def get_all_audio(file: str) -> list:
-    """Generates all the 15 second subsections of a given audio file"""
+def get_all_audio(file: str, chunk_size: int) -> list:
+    """Generates all the X second subsections of a given audio file"""
     # Get length of the audio file using the mutagen lib
     audio_mp3 = MP3(file)
     length = int(audio_mp3.info.length) # Time in seconds truncated
-    if length <= 15:
+    if length <= chunk_size:
         fat,sr = librosa.load(file)
+        #TODO: ADD PADDING
         return librosa.resample(y=fat,orig_sr=sr,target_sr=8000)
+    tail = chunk_size
+    head = 0
+    series = []
+    while tail <= length:
+        librosa.load(path=file, offset=head, duration=tail-head)
     
     
 
