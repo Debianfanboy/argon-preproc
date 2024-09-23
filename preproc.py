@@ -2,6 +2,20 @@ import os
 import sys
 import librosa
 import numpy as np
+from mutagen.mp3 import MP3
+
+
+def get_all_audio(file: str) -> list:
+    """Generates all the 15 second subsections of a given audio file"""
+    # Get length of the audio file using the mutagen lib
+    audio_mp3 = MP3(file)
+    length = int(audio_mp3.info.length) # Time in seconds truncated
+    if length <= 15:
+        fat,sr = librosa.load(file)
+        return librosa.resample(y=fat,orig_sr=sr,target_sr=8000)
+    
+    
+
 
 for root, dirs, files in os.walk("./data"):
     path = root.split(os.sep)
@@ -14,6 +28,7 @@ for root, dirs, files in os.walk("./data"):
         filename = f"{file}"
         file = f"./data/{filename}"
         
+        get_all_audio(file)
         time_series, sr = librosa.load(file)
         time_series = librosa.resample(y=time_series, orig_sr=sr, target_sr=8000)
         sr = 8000
