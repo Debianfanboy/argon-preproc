@@ -18,8 +18,14 @@ def get_all_audio(file: str, chunk_size: int) -> list:
     head = 0
     series = []
     while tail <= length:
-        librosa.load(path=file, offset=head, duration=tail-head)
-    
+        time, sr = librosa.load(path=file, offset=head, duration=tail-head)
+        time = librosa.resample(y=time, orig_sr=sr, target_sr=8000)
+        sr = 8000
+        mel = librosa.feature.melspectrogram(time)
+        series.append(mel)
+        head += 1
+        tail += 1
+    return series
     
 
 
